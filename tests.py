@@ -3,15 +3,18 @@ import math
 
 
 class Theme(ABC):
-    _themes = []
+
+    def __init__(self, parent=None):
+        self.parent = parent
+        self._themes = ["математика", "фізика", "географія", "загальні", "робота з текстом"]
 
     @abstractmethod
     def name(self):
         pass
 
     def action(self):
-        return f"Ви обрали тему {self.name}. Ви можете задати  мені питання з наступних" \
-               f" тем: {', '.join(self._themes[:-1]) + self._themes[-1]}. "
+        themes = ', '.join(self._themes[:-1]) + self._themes[-1] if self._themes else ''
+        return f"Ви обрали тему {self.name}. Ви можете задати мені питання з наступних тем: {themes}. "
 
     @property
     def themes(self):
@@ -19,47 +22,64 @@ class Theme(ABC):
 
 
 class Math(Theme):
+    def __init__(self):
+        super().__init__()
+        self.parent = super()
+
     @property
     def name(self):
-        return "Математика"
+        return "математика"
 
 
 class Physics(Theme):
-    _themes = ["Вивести гравітаційну сталу"]
+    def __init__(self):
+        super().__init__()
+        self.parent = super()
+        self._themes.extend(["вивести гравітаційну сталу", "вивести кулонівську сталу"])
 
     @property
     def name(self):
-        return "Фізика"
+        return "фізика"
 
 
 class Geography(Theme):
+    def __init__(self):
+        super().__init__()
+        self.parent = super()
+
     @property
     def name(self):
-        return "Географія"
+        return "географія"
 
 
 class Philology(Theme):
+    def __init__(self):
+        super().__init__()
+        self.parent = super()
+
     @property
     def name(self):
-        return "Філологія"
+        return "філологія"
 
 
 class General(Theme):
+    def __init__(self):
+        super().__init__()
+        self.parent = super()
+
     @property
     def name(self):
-        return "Загальні"
+        return "загальні"
 
 
 class Text(Theme):
+    def __init__(self):
+        super().__init__()
+        self.parent = super()
+
     @property
     def name(self):
-        return "Робота з текстом"
-
-
-class Game(Theme):
-    @property
-    def name(self):
-        return 'Гра "історія"'
+        return "робота з текстом"
 
 
 class G(Physics):
@@ -72,10 +92,15 @@ class Coulomb(Physics):
         return f"{str(8.9875517923e+9)} N*m^2/C^2"
 
 
+class Handler:
+    def handle(self):
+        pass
+
+
 class VirtualAssistant:
     _instance = None
-    _dict = {Physics(): [G, Coulomb]}
-    _THEMES = [Math(), Physics(), Geography(), Philology(), General(), Text(), Game()]
+    _DICT = {Physics: [G, Coulomb], Math: [], Geography: [],
+             Philology: [], General: [], Text: []}
 
     def __new__(cls, *args, **kwargs):
         if cls._instance is None:
@@ -84,8 +109,3 @@ class VirtualAssistant:
 
     def __init__(self):
         self._dialogues = []
-
-    def answer(self):
-        print(
-            f"Вітаю, мене звати {VirtualAssistant.__name__}. Ви можете задати мені питання з наступних тем: "
-            f"{', '.join([theme.name for theme in self._THEMES[:-1]])}, {self._THEMES[-1].name}.")
