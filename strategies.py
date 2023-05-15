@@ -8,8 +8,7 @@ import json
 class Strategy(ABC):
     @abstractmethod
     def __init__(self):
-        self.sub_str = {
-        }
+        pass
 
     @abstractmethod
     def handle_question(self, question):
@@ -179,9 +178,9 @@ class TextManipulationStrategy(Strategy):
         super().__init__()
 
     def handle_question(self, question):
-        sub_str = {"вивести вміст файлу в зворотному порядку.": TextManipulationStrategy1(),
-                   "вивести всі слова довші за 10 символів.": TextManipulationStrategy2(),
-                   "перевести текст в нижній регістр.": TextManipulationStrategy3()}
+        sub_str = {"вивести вміст файлу в зворотному порядку": TextManipulationStrategy1(),
+                   "вивести всі слова довші за 10 символів": TextManipulationStrategy2(),
+                   "перевести текст в нижній регістр": TextManipulationStrategy3()}
         if question in sub_str:
             solver = sub_str[question]
             return solver.handle_question(question)
@@ -191,17 +190,48 @@ class TextManipulationStrategy(Strategy):
 
 class TextManipulationStrategy1(TextManipulationStrategy):
     def handle_question(self, question):
-        return "text FIRST"
+        # TODO виправити лайно код
+        predict = "Який файл обробити\n"
+        ChatBot._history.append("BOT: " + predict)
 
+        guess = input(predict).strip()
+        ChatBot._history.append("USER: " + guess)
+        try:
+            with open(str(guess), "r") as file:
 
-class TextManipulationStrategy3(TextManipulationStrategy):
-    def handle_question(self, question):
-        return "text 3"
+                return file.read()[::-1]
+        except:
+            return "Неправильний файл"
 
 
 class TextManipulationStrategy2(TextManipulationStrategy):
     def handle_question(self, question):
-        return "text 2"
+        # TODO виправити лайно код
+        predict = "Який файл обробити\n"
+        ChatBot._history.append("BOT: " + predict)
+
+        guess = input(predict).strip()
+        ChatBot._history.append("USER: " + guess)
+        try:
+            with open(str(guess), "r") as file:
+                return ", ".join(list(filter(lambda x: len(x) > 10, file.read().split())))
+        except:
+            return "Неправильний файл"
+
+
+class TextManipulationStrategy3(TextManipulationStrategy):
+    def handle_question(self, question):
+        # TODO виправити лайно код
+        predict = "Який файл обробити\n"
+        ChatBot._history.append("BOT: " + predict)
+
+        guess = input(predict).strip()
+        ChatBot._history.append("USER: " + guess)
+        try:
+            with open(str(guess), "r") as file:
+                return file.read().lower()
+        except:
+            return "Неправильний файл"
 
 
 class GeneralStrategy(Strategy):
@@ -245,10 +275,10 @@ class GeneralStrategy3(GeneralStrategy):
     def handle_question(self, question):
         num = round(random.random() * 10)
         predict = "Назви число\n"
-        ChatBot._history.append(predict)
+        ChatBot._history.append("BOT: " + predict)
 
         guess = input(predict)
-        ChatBot._history.append(guess)
+        ChatBot._history.append("USER: " + guess)
         try:
             guess = int(guess)
             if guess == num:
@@ -310,13 +340,9 @@ class ChatBot:
 
     def __exit__(self, type, value, traceback):
         def rounder(args):
-            n, string = args
-            if n % 2 == 1:
-                return "User:" + string.strip() + "\n"
-            else:
-                return "Bot:" + string.strip() + "\n"
+            return args.strip() + "\n"
 
-        ChatBot._history = list(map(rounder, enumerate(ChatBot._history)))
+        ChatBot._history = list(map(rounder, ChatBot._history))
         with open(self.file, "w") as dump:
             dump.writelines(self._history)
         return ChatBot._history
@@ -327,12 +353,10 @@ class ChatBot:
         return cls._instance
 
     def __init__(self):
-        with open("config.json", "r") as json_file:
-            tmp = json.load(json_file)['file'].split('.')
-            self.file = tmp[0]+str(dt.datetime.now().strftime("%Y_%m_%d-%I_%M_%S_%p"))+"."+tmp[1]
 
-
-
+        self.file = "dialog-" + str(dt.datetime.now().strftime("%Y_%m_%d-%I_%M_%S_%p")) + ".txt"
+        with open("config.json", "r") as dfile:
+            self.dumpfile = json.load(dfile)["file"]
         self.strategies = {
             "математика": MathStrategy(),
             "фізика": PhysicsStrategy(),
@@ -362,7 +386,7 @@ class ChatBot:
                     return f"Ви обрали тему {theme}, доступні дані питання: " + ", ".join(response) + "\n"
 
             else:
-                ChatBot.i = 0
+                ChatBot.i = 1
                 return response
 
         else:
@@ -407,33 +431,5 @@ class Handler:
                 return ChatBot.status
 
 
-if __name__ == '__main__':
-    with ChatBot() as chat_bot:
-        handler = Handler(chat_bot)
 
-        ans = input(handler.obj.hello())
-        chat_bot.history.append(handler.obj.hello())
-        chat_bot.history.append(ans + "\n")
-        ans = ans.lower().strip()
-        status = ("", "", "")
-        while ans != "вихід":
-            if ans in chat_bot.strategies or handler.theme in chat_bot.strategies:
-                handler.theme = ans
-                if ChatBot.i == 0:
-                    response = handler.handle_question(ans)
-                    chat_bot.history.append(response)
-                else:
-                    chat_bot.history.append(tmp)
-                    response = handler.handle_question(tmp)
-                    chat_bot.history.append(response + "\n")
-                tmp = input(response).strip().lower()
-                if tmp in chat_bot.strategies or tmp == "вихід":
-                    ans = tmp
-                    chat_bot.history.append(ans + "\n")
-                    handler.theme = ans
-                    ChatBot.i = 0
-            else:
-                ans = input(handler.obj.hello())
-                chat_bot.history.append(handler.obj.hello())
-                chat_bot.history.append(ans + '\n')
-                ans = ans.lower().strip()
+
