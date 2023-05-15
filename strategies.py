@@ -48,33 +48,7 @@ class MathStrategy3(MathStrategy):
 
 
 class MathStrategy4(MathStrategy):
-    @staticmethod
-    def convert(num):
-        try:
-            f = float(num)
-            return f
-        except ValueError:
-            return False
-
-    def is_correct(self, question: str):
-        tmp = question.split(",")
-        if len(tmp) == 4 and all(map(self.convert, tmp)):
-            return map(float, tmp)
-        else:
-            return False
-
     def handle_question(self, question):
-        """f ChatBot.status[2] != 1:
-            ChatBot.status = (handler.theme, question, 1)
-        GG = "Введіть 4 числа у форматі: x1, y1, x2, y2\n"
-        tmp1 = input("Введіть 4 числа у форматі: x1, y1, x2, y2")
-        ChatBot().history.append(GG)
-        ChatBot().history.append(tmp1)
-        while not self.is_correct(tmp1):
-            tmp1 = input("Введіть 4 числа у форматі: x1, y1, x2, y2")
-            ChatBot().history.append(GG)
-            ChatBot().history.append(tmp1+"\n")
-        """
         return "ну дурні питання, я тобі як без точок це зроблю, як ти на 2 курс перейшла?"
 
 
