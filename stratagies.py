@@ -18,7 +18,10 @@ class MathStrategy(Strategy):
 
     def handle_question(self, question) -> str | list:
         sub_str = {"формула розв'язання квадратного рівняння": MathStrategy1(),
-                   "формула векторного добутку векторів": MathStrategy2()}
+                   "формула векторного добутку векторів": MathStrategy2(),
+                   "вивести число π": MathStrategy3(),
+                   "знайти координати точки перетину двох прямих,"
+                   " заданих векторами (x1, y1) та (x2, y2).": MathStrategy4()}
         if question in sub_str:
             solver = sub_str[question]
             return solver.handle_question(question)
@@ -34,6 +37,16 @@ class MathStrategy1(MathStrategy):
 class MathStrategy2(MathStrategy):
     def handle_question(self, question):
         return "Math Second"
+
+
+class MathStrategy3(MathStrategy):
+    def handle_question(self, question):
+        return "Math Third"
+
+
+class MathStrategy4(MathStrategy):
+    def handle_question(self, question):
+        return "Math Third"
 
 
 class PhysicsStrategy(Strategy):
@@ -61,13 +74,59 @@ class PhysicsStrategy2(PhysicsStrategy):
         return "SECOND"
 
 
+class PhilologyStrategy(Strategy):
+    def __init__(self):
+        super().__init__()
+
+    def handle_question(self, question) -> str | list:
+        sub_str = {"які часи є в англійській мові?": PhilologyStrategy1(),
+                   "як утворюються питальні речення в англійській мові?": PhilologyStrategy2(),
+                   "Як утворити Passive Voice в Present Simple??".lower(): PhilologyStrategy3()}
+        if question in sub_str:
+            solver = sub_str[question]
+            return solver.handle_question(question)
+        else:
+            return list(sub_str.keys())
+
+
+class PhilologyStrategy1(PhilologyStrategy):
+    def handle_question(self, question):
+        return "Philo FIRST"
+
+
+class PhilologyStrategy2(PhilologyStrategy):
+    def handle_question(self, question):
+        return "Philo 2"
+
+
+class PhilologyStrategy3(PhilologyStrategy):
+    def handle_question(self, question):
+        return "Philo 3"
+
+
 class GeographyStrategy(Strategy):
     def __init__(self):
         super().__init__()
 
     def handle_question(self, question):
-        # execute geography logic here and return response
-        pass
+        sub_str = {"яке найбільше озеро в світі за площею?": GeographyStrategy1(),
+                   "який океан найбільший за площею?": GeographyStrategy2()}
+        if question in sub_str:
+            solver = sub_str[question]
+            return solver.handle_question(question)
+        else:
+            return list(sub_str.keys())
+
+
+class GeographyStrategy1(GeographyStrategy):
+    def handle_question(self, question):
+        return "Geo FIRST"
+
+
+class GeographyStrategy2(GeographyStrategy):
+
+    def handle_question(self, question):
+        return "Geo SECOND"
 
 
 class TextManipulationStrategy(Strategy):
@@ -75,8 +134,29 @@ class TextManipulationStrategy(Strategy):
         super().__init__()
 
     def handle_question(self, question):
-        # execute text manipulation logic here and return response
-        pass
+        sub_str = {"вивести вміст файлу в зворотному порядку.": TextManipulationStrategy1(),
+                   "вивести всі слова довші за 10 символів.": TextManipulationStrategy2(),
+                   "перевести текст в нижній регістр.": TextManipulationStrategy3()}
+        if question in sub_str:
+            solver = sub_str[question]
+            return solver.handle_question(question)
+        else:
+            return list(sub_str.keys())
+
+
+class TextManipulationStrategy1(TextManipulationStrategy):
+    def handle_question(self, question):
+        return "text FIRST"
+
+
+class TextManipulationStrategy3(TextManipulationStrategy):
+    def handle_question(self, question):
+        return "text 3"
+
+
+class TextManipulationStrategy2(TextManipulationStrategy):
+    def handle_question(self, question):
+        return "text 2"
 
 
 class GeneralStrategy(Strategy):
@@ -84,8 +164,78 @@ class GeneralStrategy(Strategy):
         super().__init__()
 
     def handle_question(self, question):
-        # execute general logic here and return response
-        pass
+        sub_str = {"скільки днів до Нового Року?": GeneralStrategy1(),
+                   "який зараз місяць?": GeneralStrategy2(),
+                   "пограти у вгадай число між 1 та 10": GeneralStrategy3(),
+                   "заспівати колядку": GeneralStrategy4(),
+                   "варіант від студента 6?": GeneralStrategy5(),
+                   "варіант від студента 8": GeneralStrategy6(),
+                   "варіант від студента 10": GeneralStrategy7(),
+                   "варіант від студента 12": GeneralStrategy8(),
+                   "варіант від студента 23": GeneralStrategy9(),
+                   "варіант від студента 25": GeneralStrategy10(),
+                   "варіант від студента 27": GeneralStrategy11()
+                   }
+        if question in sub_str:
+            solver = sub_str[question]
+            return solver.handle_question(question)
+        else:
+            return list(sub_str.keys())
+
+
+class GeneralStrategy1(GeneralStrategy):
+    def handle_question(self, question):
+        return "general FIRST"
+
+
+class GeneralStrategy2(GeneralStrategy):
+    def handle_question(self, question):
+        return "general 2"
+
+
+class GeneralStrategy3(GeneralStrategy):
+    def handle_question(self, question):
+        return "general 3"
+
+
+class GeneralStrategy4(GeneralStrategy):
+    def handle_question(self, question):
+        return "general 4"
+
+
+class GeneralStrategy5(GeneralStrategy):
+    def handle_question(self, question):
+        return "general 5"
+
+
+class GeneralStrategy6(GeneralStrategy):
+    def handle_question(self, question):
+        return "general 6"
+
+
+class GeneralStrategy7(GeneralStrategy):
+    def handle_question(self, question):
+        return "general 7"
+
+
+class GeneralStrategy8(GeneralStrategy):
+    def handle_question(self, question):
+        return "general 8"
+
+
+class GeneralStrategy9(GeneralStrategy):
+    def handle_question(self, question):
+        return "general 9"
+
+
+class GeneralStrategy10(GeneralStrategy):
+    def handle_question(self, question):
+        return "general 10"
+
+
+class GeneralStrategy11(GeneralStrategy):
+    def handle_question(self, question):
+        return "general 11"
 
 
 class ChatBot:
@@ -183,6 +333,7 @@ if __name__ == '__main__':
                     response = handler.handle_question(ans)
                     chat_bot.history.append(response)
                 else:
+                    chat_bot.history.append(tmp)
                     response = handler.handle_question(tmp)
                     chat_bot.history.append(response)
                 tmp = input(response).strip().lower()
