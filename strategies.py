@@ -1,4 +1,8 @@
 from abc import ABC, abstractmethod
+import math
+import datetime as dt
+import random
+import json
 
 
 class Strategy(ABC):
@@ -21,7 +25,7 @@ class MathStrategy(Strategy):
                    "формула векторного добутку векторів": MathStrategy2(),
                    "вивести число π": MathStrategy3(),
                    "знайти координати точки перетину двох прямих,"
-                   " заданих векторами (x1, y1) та (x2, y2).": MathStrategy4()}
+                   " заданих векторами (x1, y1) та (x2, y2)": MathStrategy4()}
         if question in sub_str:
             solver = sub_str[question]
             return solver.handle_question(question)
@@ -31,22 +35,48 @@ class MathStrategy(Strategy):
 
 class MathStrategy1(MathStrategy):
     def handle_question(self, question):
-        return "Math FIRST"
+        return "x = (-b ±√(b^2 - 4ac)) / 2a, де a, b та c - коефіцієнти квадратного рівняння ax^2 + bx + c = 0"
 
 
 class MathStrategy2(MathStrategy):
     def handle_question(self, question):
-        return "Math Second"
+        return "A x B = (AyBz - AzBy, AzBx - AxBz, AxBy - AyBx), де A та B - вектори."
 
 
 class MathStrategy3(MathStrategy):
     def handle_question(self, question):
-        return "Math Third"
+        return f"Pi is: {math.pi}"
 
 
 class MathStrategy4(MathStrategy):
+    @staticmethod
+    def convert(num):
+        try:
+            f = float(num)
+            return f
+        except ValueError:
+            return False
+
+    def is_correct(self, question: str):
+        tmp = question.split(",")
+        if len(tmp) == 4 and all(map(self.convert, tmp)):
+            return map(float, tmp)
+        else:
+            return False
+
     def handle_question(self, question):
-        return "Math Third"
+        """f ChatBot.status[2] != 1:
+            ChatBot.status = (handler.theme, question, 1)
+        GG = "Введіть 4 числа у форматі: x1, y1, x2, y2\n"
+        tmp1 = input("Введіть 4 числа у форматі: x1, y1, x2, y2")
+        ChatBot().history.append(GG)
+        ChatBot().history.append(tmp1)
+        while not self.is_correct(tmp1):
+            tmp1 = input("Введіть 4 числа у форматі: x1, y1, x2, y2")
+            ChatBot().history.append(GG)
+            ChatBot().history.append(tmp1+"\n")
+        """
+        return "ну дурні питання, я тобі як без точок це зроблю, як ти на 2 курс перейшла?"
 
 
 class PhysicsStrategy(Strategy):
@@ -65,13 +95,13 @@ class PhysicsStrategy(Strategy):
 
 class PhysicsStrategy1(PhysicsStrategy):
     def handle_question(self, question):
-        return "FIRST"
+        return "ε0 = 8,85⋅10−12 Ф/м\n"
 
 
 class PhysicsStrategy2(PhysicsStrategy):
 
     def handle_question(self, question):
-        return "SECOND"
+        return "G = 6.67384(80)10-11 м3 кг-1 с-2"
 
 
 class PhilologyStrategy(Strategy):
@@ -81,7 +111,7 @@ class PhilologyStrategy(Strategy):
     def handle_question(self, question) -> str | list:
         sub_str = {"які часи є в англійській мові?": PhilologyStrategy1(),
                    "як утворюються питальні речення в англійській мові?": PhilologyStrategy2(),
-                   "Як утворити Passive Voice в Present Simple??".lower(): PhilologyStrategy3()}
+                   "Як утворити Passive Voice в Present Simple?".lower(): PhilologyStrategy3()}
         if question in sub_str:
             solver = sub_str[question]
             return solver.handle_question(question)
@@ -91,17 +121,32 @@ class PhilologyStrategy(Strategy):
 
 class PhilologyStrategy1(PhilologyStrategy):
     def handle_question(self, question):
-        return "Philo FIRST"
+        return "Present Simple використовують для виразу звичайної, регулярно повторюваної дії." \
+               "Past Simple використовують для виразу дії, яка відбулася у минулому.\n" \
+               "Future Simple використовують для виразу дії, яка відбудеться у майбутньому." \
+               "Present Continuous використовують для виразу дії, яка відбувається на даний момент.\n" \
+               "Past Continuous використовують для виразу дії, яка вже відбулася в певний момент часу у минулому." \
+               "Future Continuous використовують для виразу дії," \
+               "яка буде відбуватися у певний момент часу в майбутньому.\n" \
+               "Present Perfect використовують для виразу дії, яка відбулася (або яка відбувається)," \
+               "результат якої зв’язаний з теперішнім.Past Perfect використовують для виразу дії,\n" \
+               "яка закінчилася раніше другої дії або певного моменту у минулому.Future Perfect використовують" \
+               "для виразу дії, яка завершиться до певного моменту часу в майбутньому."
 
 
 class PhilologyStrategy2(PhilologyStrategy):
     def handle_question(self, question):
-        return "Philo 2"
+        return "Питальне слово + допоміжне (або модальне) дієслово + підмет + присудок + додаток + інші члени " \
+               "речення.\n" \
+               "Простіше — на прикладі: What (питальне слово) are" \
+               " (допоміжне дієслово) you (підмет) cooking (присудок)?" \
+               " – Що ти готуєш?"
 
 
 class PhilologyStrategy3(PhilologyStrategy):
     def handle_question(self, question):
-        return "Philo 3"
+        return "Предмет / людина + am / are / is + 3-тя форма неправильного" \
+               " дієслова або правильний дієслово з закінченням -ed."
 
 
 class GeographyStrategy(Strategy):
@@ -120,13 +165,13 @@ class GeographyStrategy(Strategy):
 
 class GeographyStrategy1(GeographyStrategy):
     def handle_question(self, question):
-        return "Geo FIRST"
+        return "Озеро Каспій"
 
 
 class GeographyStrategy2(GeographyStrategy):
 
     def handle_question(self, question):
-        return "Geo SECOND"
+        return "Тихий Океан"
 
 
 class TextManipulationStrategy(Strategy):
@@ -164,7 +209,7 @@ class GeneralStrategy(Strategy):
         super().__init__()
 
     def handle_question(self, question):
-        sub_str = {"скільки днів до Нового Року?": GeneralStrategy1(),
+        sub_str = {"скільки днів до Нового Року?".lower(): GeneralStrategy1(),
                    "який зараз місяць?": GeneralStrategy2(),
                    "пограти у вгадай число між 1 та 10": GeneralStrategy3(),
                    "заспівати колядку": GeneralStrategy4(),
@@ -185,17 +230,33 @@ class GeneralStrategy(Strategy):
 
 class GeneralStrategy1(GeneralStrategy):
     def handle_question(self, question):
-        return "general FIRST"
+        now = dt.datetime.now().today()
+        end = dt.datetime.today().replace(month=12, day=31)
+        return f"{(end - now).days}"
 
 
 class GeneralStrategy2(GeneralStrategy):
     def handle_question(self, question):
-        return "general 2"
+        now = dt.datetime.today().month
+        return f"{now}"
 
 
 class GeneralStrategy3(GeneralStrategy):
     def handle_question(self, question):
-        return "general 3"
+        num = round(random.random() * 10)
+        predict = "Назви число\n"
+        ChatBot._history.append(predict)
+
+        guess = input(predict)
+        ChatBot._history.append(guess)
+        try:
+            guess = int(guess)
+            if guess == num:
+                return "Вгадали"
+            else:
+                return "Не вгадали"
+        except:
+            return "число треба було вводити"
 
 
 class GeneralStrategy4(GeneralStrategy):
@@ -241,13 +302,24 @@ class GeneralStrategy11(GeneralStrategy):
 class ChatBot:
     _instance = None
     i = 0
+    status = ()
+    _history = []
 
     def __enter__(self):
         return self
 
     def __exit__(self, type, value, traceback):
-        print(self._history)
-        return self._history
+        def rounder(args):
+            n, string = args
+            if n % 2 == 1:
+                return "User:" + string.strip() + "\n"
+            else:
+                return "Bot:" + string.strip() + "\n"
+
+        ChatBot._history = list(map(rounder, enumerate(ChatBot._history)))
+        with open(self.file, "w") as dump:
+            dump.writelines(self._history)
+        return ChatBot._history
 
     def __new__(cls, *args, **kwargs):
         if cls._instance is None:
@@ -255,14 +327,20 @@ class ChatBot:
         return cls._instance
 
     def __init__(self):
+        with open("config.json", "r") as json_file:
+            tmp = json.load(json_file)['file'].split('.')
+            self.file = tmp[0]+str(dt.datetime.now().strftime("%Y_%m_%d-%I_%M_%S_%p"))+"."+tmp[1]
+
+
+
         self.strategies = {
             "математика": MathStrategy(),
             "фізика": PhysicsStrategy(),
             "географія": GeographyStrategy(),
             "робота з текстом": TextManipulationStrategy(),
-            "загальні": GeneralStrategy()
+            "загальні": GeneralStrategy(),
+            "філологія": PhilologyStrategy()
         }
-        self._history = []
 
     def hello(self):
         return f"Вітаю, мене звати {ChatBot.__name__}. Ви можете задати мені питання з наступних" \
@@ -276,6 +354,7 @@ class ChatBot:
             tmp.extend(response)
             if isinstance(response, list):
                 if ChatBot.i == -1:
+                    ChatBot.status = (strategy, question, ChatBot.i)
                     return f"Я не знаю таку тему. Ви обрали тему {theme}, доступні дані питання: " + ", ".join(
                         tmp) + "\n"
                 else:
@@ -312,10 +391,20 @@ class Handler:
         self._theme = theme
 
     def handle_question(self, question):
-        if self.theme == "":
-            return self.obj.hello()
+        if question != "назад":
+            if self.theme == "":
+                return self.obj.hello()
+            else:
+                return self.obj.handle_question(question, self.theme)
         else:
-            return self.obj.handle_question(question, self.theme)
+            if ChatBot.status == ():
+                return self.obj.hello()
+            elif ChatBot.status[2] == -1:
+                ChatBot.status = ()
+                return self.obj.hello()
+            else:
+                # todo
+                return ChatBot.status
 
 
 if __name__ == '__main__':
@@ -324,8 +413,9 @@ if __name__ == '__main__':
 
         ans = input(handler.obj.hello())
         chat_bot.history.append(handler.obj.hello())
-        chat_bot.history.append(ans)
+        chat_bot.history.append(ans + "\n")
         ans = ans.lower().strip()
+        status = ("", "", "")
         while ans != "вихід":
             if ans in chat_bot.strategies or handler.theme in chat_bot.strategies:
                 handler.theme = ans
@@ -335,15 +425,15 @@ if __name__ == '__main__':
                 else:
                     chat_bot.history.append(tmp)
                     response = handler.handle_question(tmp)
-                    chat_bot.history.append(response)
+                    chat_bot.history.append(response + "\n")
                 tmp = input(response).strip().lower()
                 if tmp in chat_bot.strategies or tmp == "вихід":
                     ans = tmp
-                    chat_bot.history.append(ans)
+                    chat_bot.history.append(ans + "\n")
                     handler.theme = ans
                     ChatBot.i = 0
             else:
                 ans = input(handler.obj.hello())
                 chat_bot.history.append(handler.obj.hello())
-                chat_bot.history.append(ans)
+                chat_bot.history.append(ans + '\n')
                 ans = ans.lower().strip()
