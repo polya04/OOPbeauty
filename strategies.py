@@ -317,7 +317,8 @@ class ChatBot:
                 return "Bot:" + string.strip() + "\n"
 
         ChatBot._history = list(map(rounder, enumerate(ChatBot._history)))
-        print(ChatBot._history, self.file)
+        with open(self.file, "w") as dump:
+            dump.writelines(self._history)
         return ChatBot._history
 
     def __new__(cls, *args, **kwargs):
