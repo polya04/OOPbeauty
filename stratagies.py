@@ -16,9 +16,24 @@ class MathStrategy(Strategy):
     def __init__(self):
         super().__init__()
 
+    def handle_question(self, question) -> str | list:
+        sub_str = {"формула розв'язання квадратного рівняння": MathStrategy1(),
+                   "формула векторного добутку векторів": MathStrategy2()}
+        if question in sub_str:
+            solver = sub_str[question]
+            return solver.handle_question(question)
+        else:
+            return list(sub_str.keys())
+
+
+class MathStrategy1(MathStrategy):
     def handle_question(self, question):
-        # execute math logic here and return response
-        pass
+        return "Math FIRST"
+
+
+class MathStrategy2(MathStrategy):
+    def handle_question(self, question):
+        return "Math Second"
 
 
 class PhysicsStrategy(Strategy):
@@ -77,6 +92,13 @@ class ChatBot:
     _instance = None
     i = 0
 
+    def __enter__(self):
+        return self
+
+    def __exit__(self, type, value, traceback):
+        print(self._history)
+        return self._history
+
     def __new__(cls, *args, **kwargs):
         if cls._instance is None:
             cls._instance = super().__new__(cls)
@@ -90,11 +112,11 @@ class ChatBot:
             "робота з текстом": TextManipulationStrategy(),
             "загальні": GeneralStrategy()
         }
-        self.tmp = 0
+        self._history = []
 
     def hello(self):
         return f"Вітаю, мене звати {ChatBot.__name__}. Ви можете задати мені питання з наступних" \
-               f" тем: {', '.join(list(self.strategies.keys()))[:-1]}, {list(self.strategies.keys())[-1]}.\n"
+               f" тем: {', '.join(list(self.strategies.keys()))[:]}.\n"
 
     def handle_question(self, question, theme):
         if theme in self.strategies:
@@ -104,10 +126,11 @@ class ChatBot:
             tmp.extend(response)
             if isinstance(response, list):
                 if ChatBot.i == -1:
-                    return f"Ви обрали тему {theme}, доступні дані питання: " + ", ".join(tmp) + "\n"
+                    return f"Я не знаю таку тему. Ви обрали тему {theme}, доступні дані питання: " + ", ".join(
+                        tmp) + "\n"
                 else:
                     ChatBot.i = -1
-                    return "Доступні дані теми: " + ", ".join(response) + "\n"
+                    return f"Ви обрали тему {theme}, доступні дані питання: " + ", ".join(response) + "\n"
 
             else:
                 ChatBot.i = 0
@@ -115,6 +138,14 @@ class ChatBot:
 
         else:
             return "Sorry, I don't know how to answer that question."
+
+    @property
+    def history(self):
+        return self._history
+
+    @history.setter
+    def history(self, item):
+        self._history.extend(item)
 
 
 class Handler:
@@ -138,21 +169,30 @@ class Handler:
 
 
 if __name__ == '__main__':
-    chat_bot = ChatBot()
-    handler = Handler(chat_bot)
+    with ChatBot() as chat_bot:
+        handler = Handler(chat_bot)
 
-    ans = input(handler.obj.hello()).lower().strip()
-    while ans != "вихід":
-        if ans in chat_bot.strategies or handler.theme in chat_bot.strategies:
-            handler.theme = ans
-            if ChatBot.i == 0:
-                response = handler.handle_question(ans)
-            else:
-                response = handler.handle_question(tmp)
-            tmp = input(response).strip().lower()
-            if tmp in chat_bot.strategies:
-                ans = tmp
+        ans = input(handler.obj.hello())
+        chat_bot.history.append(handler.obj.hello())
+        chat_bot.history.append(ans)
+        ans = ans.lower().strip()
+        while ans != "вихід":
+            if ans in chat_bot.strategies or handler.theme in chat_bot.strategies:
                 handler.theme = ans
-                ChatBot.i = 0
-        else:
-            ans = input("Choose correct variant\n")
+                if ChatBot.i == 0:
+                    response = handler.handle_question(ans)
+                    chat_bot.history.append(response)
+                else:
+                    response = handler.handle_question(tmp)
+                    chat_bot.history.append(response)
+                tmp = input(response).strip().lower()
+                if tmp in chat_bot.strategies or tmp == "вихід":
+                    ans = tmp
+                    chat_bot.history.append(ans)
+                    handler.theme = ans
+                    ChatBot.i = 0
+            else:
+                ans = input(handler.obj.hello())
+                chat_bot.history.append(handler.obj.hello())
+                chat_bot.history.append(ans)
+                ans = ans.lower().strip()
