@@ -164,7 +164,7 @@ class TextManipulationStrategy(Strategy):
 
 class TextManipulationStrategy1(TextManipulationStrategy):
     def handle_question(self, question):
-        # TODO виправити лайно код
+        # TODO виправити код
         predict = "Який файл обробити\n"
         ChatBot._history.append("BOT: " + predict)
 
@@ -180,7 +180,7 @@ class TextManipulationStrategy1(TextManipulationStrategy):
 
 class TextManipulationStrategy2(TextManipulationStrategy):
     def handle_question(self, question):
-        # TODO виправити лайно код
+        # TODO виправити код
         predict = "Який файл обробити\n"
         ChatBot._history.append("BOT: " + predict)
 
@@ -195,7 +195,7 @@ class TextManipulationStrategy2(TextManipulationStrategy):
 
 class TextManipulationStrategy3(TextManipulationStrategy):
     def handle_question(self, question):
-        # TODO виправити лайно код
+        # TODO виправити код
         predict = "Який файл обробити\n"
         ChatBot._history.append("BOT: " + predict)
 
