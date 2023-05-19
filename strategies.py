@@ -329,8 +329,6 @@ class ChatBot:
     def __init__(self):
 
         self.file = "dialog-" + str(dt.datetime.now().strftime("%Y_%m_%d-%I_%M_%S_%p")) + ".txt"
-        with open("config.json", "r") as dfile:
-            self.dumpfile = json.load(dfile)["file"]
         self.strategies = {
             "математика": MathStrategy(),
             "фізика": PhysicsStrategy(),
