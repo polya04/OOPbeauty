@@ -328,6 +328,10 @@ class ChatBot:
 
     def __init__(self):
 
+        with open('config.json', "r") as fil:
+            self.json = json.load(fil)["file"]
+
+
         self.file = "dialog-" + str(dt.datetime.now().strftime("%Y_%m_%d-%I_%M_%S_%p")) + ".txt"
         self.strategies = {
             "математика": MathStrategy(),
@@ -387,6 +391,8 @@ class Handler:
         self._theme = theme
 
     def handle_question(self, question):
+        if question == "допомога":
+            return f'для того щоб повернутися назад напишіть назад. Для виходу напишіть вихід\n'
         if question != "назад":
             if self.theme == "":
                 return self.obj.hello()
