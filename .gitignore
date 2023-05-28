@@ -33,6 +33,7 @@ MANIFEST
 *.spec
 
 # Installer logs
+history.txt
 dumps2*
 dialog-2*
 pip-log.txt
