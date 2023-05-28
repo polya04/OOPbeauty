@@ -12,6 +12,11 @@ if __name__ == '__main__':
         status = ("", "", "")
 
         while ans != "вихід":
+            with open(chat_bot.json, "w") as file:
+                file.writelines(chat_bot.history)
+            if ans == "допомога":
+                print("для того щоб повернутися назад напишіть назад. Для виходу напишіть вихід")
+                chat_bot.history.append("BOT: " + "для того щоб повернутися назад напишіть назад. Для виходу напишіть вихід\n")
             if ans in chat_bot.strategies or handler.theme in chat_bot.strategies:
                 handler.theme = ans
                 if ChatBot.i == 0:
